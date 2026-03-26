@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You ❤️</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #fff5f7;
+    overflow: hidden;
+  }
+
+  .container {
+    text-align: center;
+  }
+
+  img {
+    width: 220px;
+    border-radius: 20px;
+  }
+
+  h1 {
+    margin-top: 20px;
+  }
+
+  .buttons {
+    margin-top: 20px;
+  }
+
+  button {
+    padding: 12px 22px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #ff6b81;
+    color: white;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #noBtn {
+    position: fixed;
+    transition: left 0.25s ease, top 0.25s ease; /* smooth movement */
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- FIRST SCREEN -->
+<div class="container" id="mainScreen">
+
+  <img src="girl1.jpeg">
+
+  <h1>Will you be my girlfriend? ❤️</h1>
+
+  <div class="buttons">
+    <button id="yesBtn" onclick="yesClick()">I'm yours ❤️</button>
+    <button id="noBtn">No 😢</button>
+  </div>
+
+</div>
+
+<!-- SECOND SCREEN -->
+<div class="container hidden" id="resultScreen">
+  <img src="girl2.jpeg">
+  <h1>I’ll treat you right, I promise ❤️</h1>
+</div>
+
+<audio id="bgMusic" src="song.mp3" loop></audio>
+
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const music = document.getElementById("bgMusic");
+
+  // move when mouse comes near
+  document.addEventListener("mousemove", (e) => {
+    const rect = noBtn.getBoundingClientRect();
+    const yesRect = yesBtn.getBoundingClientRect();
+
+    const distX = e.clientX - (rect.left + rect.width / 2);
+    const distY = e.clientY - (rect.top + rect.height / 2);
+    const distance = Math.sqrt(distX * distX + distY * distY);
+
+    if (distance < 120) { // trigger distance
+      moveNo(yesRect);
+    }
+  });
+
+  function moveNo(yesRect) {
+    let newX, newY;
+    let attempts = 0;
+
+    do {
+      newX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      newY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+      attempts++;
+      if (attempts > 15) break;
+
+    } while (isOverlapping(newX, newY, yesRect));
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+  }
+
+  function isOverlapping(x, y, yesRect) {
+    const buffer = 80;
+
+    return (
+      x < yesRect.right + buffer &&
+      x + noBtn.offsetWidth > yesRect.left - buffer &&
+      y < yesRect.bottom + buffer &&
+      y + noBtn.offsetHeight > yesRect.top - buffer
+    );
+  }
+
+  function yesClick() {
+    document.getElementById("mainScreen").classList.add("hidden");
+    document.getElementById("resultScreen").classList.remove("hidden");
+    music.play();
+  }
+</script>
+
+</body>
+</html>
